@@ -4,27 +4,24 @@ import Todo from './Todo';
 
 function TodoList() {
   const [todos, setTodos] = useState([]);
+  const [filter, setFilter] = useState("");
 
   const addTodo = todo => {
-    if (todo.text==="") {
+    if (todo.input==="" || todo.status==='' || todo.date=== new Date(todos.date).toString('gg.aa.yyyy')) {
       return;
     }
-
-    const newTodos = [todo, ...todos];
-    setTodos(newTodos);
+    setTodos([todo, ...todos]);
   };
 
-  const updateTodo = (todoId, newValue) => {
-    if (newValue.text ==="" ) {
+  const updateTodo = (id, newValue) => {
+    if (newValue.input ==="") {
       return;
     }
-
-    setTodos(prev => prev.map(item => (item.id === todoId ? newValue : item)));
+    setTodos(todo => todo.map(item => (item.id === id ? newValue : item)));
   };
 
   const removeTodo = id => {
     const removedArr = [...todos].filter(todo => todo.id !== id);
-
     setTodos(removedArr);
   };
 
@@ -38,15 +35,23 @@ function TodoList() {
     setTodos(updatedTodos);
   };
 
+  const applyFilter = (elem)=>{
+    if(elem === "Hepsi")
+      setFilter("");
+    else
+      setFilter(elem)
+  }
+
+
   return (
     <>
       <h1>Yapılacaklar Listesi</h1>
-      <TodoForm onSubmit={addTodo} />
+      <TodoForm onSubmit={addTodo}  items={todos} applyFilter={applyFilter}/>
       <Todo
-        todos={todos}
+        todos={todos.filter((e)=>e.status.includes(filter))}
         completeTodo={completeTodo}
-        removeTodo={removeTodo}
         updateTodo={updateTodo}
+        removeTodo={removeTodo}
       />
     </>
   );
